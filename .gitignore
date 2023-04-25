@@ -1,0 +1,17 @@
+*.idx
+*.synctex.gz
+*.pdf
+*.html
+*.png
+*.jpeg
+*.jpg
+
+.idea
+
+/oldlearnings/*
+!/oldlearnings/cpp_primer/
+!/oldlearnings/English/
+!/oldlearnings/gitlearning/
+/latex/tikz/
+/philosophy/
+

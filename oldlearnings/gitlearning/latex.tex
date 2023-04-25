@@ -1,0 +1,20 @@
+\documentclass[12pt]{ctexart}
+\usepackage[scale=0.8]{geometry}
+\usepackage{xifthen}
+\usepackage{graphicx, float}
+\usepackage{amsmath, amssymb}
+\usepackage{enumerate}
+\usepackage{multirow}
+\usepackage{fancyvrb}
+\usepackage[colorlinks,linkcolor=red]{hyperref}
+\newcommand{\fpicture}[3][]{\begin{figure}[H]\centering\includegraphics[width=#3\textwidth]{#2}\ifthenelse{\isempty{#1}}{}{\caption{#1}}\end{figure}}
+\newcommand{\no}[1]{\paragraph[noindent]{#1}}
+\CTEXsetup[format={\Large\bfseries}]{section}
+\begin{document}
+\begin{verbatim}
+    //超链接
+    \url{https://baidu.com}
+    \href{https://baidu.com}{百度}
+    \href{F:/4/gitlearning/gitnote.pdf}{git学习笔记}
+\end{verbatim}
+\end{document}

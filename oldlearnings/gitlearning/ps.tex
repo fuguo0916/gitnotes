@@ -1,0 +1,91 @@
+\documentclass[12pt]{ctexart}
+\usepackage[scale=0.8]{geometry}
+\usepackage{xifthen}
+\usepackage{graphicx, float}
+\usepackage{amsmath}
+\usepackage{enumerate}
+\usepackage{multirow}
+\usepackage{fancyvrb}
+\usepackage{listings}
+\usepackage[dvipsnames]{xcolor}
+% \setenumerate[1]{itemsep=0pt,partopsep=0pt,parsep=\parskip,topsep=5pt}
+% \setitemize[1]{itemsep=0pt,partopsep=0pt,parsep=\parskip,topsep=5pt}
+% \setdescription{itemsep=0pt,partopsep=0pt,parsep=\parskip,topsep=5pt}
+\lstset{
+    language=Python,
+    basicstyle={\ttfamily},
+    % morekeywords={Exception,String},
+    % keywordstyle={\bfseries\itshape\color{NavyBlue}},
+    keywordstyle={\bfseries\color{NavyBlue}},
+    % commentstyle={\sffamily\small\itshape\color{PineGreen!60!black}},
+    commentstyle={\ttfamily\small\color{PineGreen!60!black}},
+    % stringstyle={\rmfamily},
+    frame=single,
+    breaklines=true,
+    backgroundcolor={\color{yellow!0!white}},
+    rulecolor={\color{purple}},
+    rulesepcolor={\color{orange}},
+    % framesep=1em,
+    % rulesep=0.3em,
+    % numbers=left,
+    % numbersep=2em,
+    % numberstyle={\sffamily\footnotesize},
+    % emph={Robot},
+    % alsoletter={.},
+    % emphstyle={\bfseries\color{Rhodamine}},
+    columns=fullflexible
+}
+\newcommand{\fpicture}[3][]{\begin{figure}[H]\centering\includegraphics[width=#3\textwidth]{#2}\ifthenelse{\isempty{#1}}{}{\caption{#1}}\end{figure}}
+\newcommand{\no}[1]{\paragraph[noindent]{#1}}
+% \CTEXsetup[format={\Large\bfseries}]{section}
+\title{编译原理作业3}
+\author{付国}
+\date{2019K8009922008}
+\begin{document}
+% \maketitle
+% \tableofcontents
+\begin{Verbatim}
+    首选项          ctrl K
+    另存为          ctrl shift S
+    导出            ctrl alt shift W
+
+    分辨率 单位长度的像素数(ppi, 像素/英寸)
+
+    调整图片大小    ctrl T
+    颜色模式 位图/位图模式/灰度模式/RGB/CMYK/LAB
+    RGB: 本身发光，在黑色背景下，通过滤色，红绿蓝可以得到其他颜色
+    CMYK: 在白底下，青、品红、黄可以通过正片叠底得到其他颜色
+
+    颜色填充 HSB(色相/饱和度/明度)
+    填充前景色 alt del
+    填充背景色 ctrl del
+    重置前景色和背景色 D
+    对调前景色和背景色 X
+    
+    选区
+    加选 shift
+    减选 alt
+    交叉 alt shift
+    取消 ctrl D
+    重选 ctrl shift D
+    反选 ctrl shift I
+
+    去水印1: 选择大的区域，填充.内容识别
+    去水印2: 选择大的区域，通过颜色精选，扩展，内容识别填充
+
+    填充 shift F5
+    选区羽化 shift F6
+    新建图层，复制选区 ctrl J
+
+    颜色矫正
+    校样颜色 ctrl Y
+    色域警告 ctrl shift Y
+
+    放缩 ctrl space
+    抓手 space
+    按屏缩放 ctrl 0
+    按实缩放 ctrl 1
+    面板组显隐 tab
+    屏幕模式切换 F
+\end{Verbatim}
+\end{document} 

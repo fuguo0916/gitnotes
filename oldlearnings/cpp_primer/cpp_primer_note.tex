@@ -1,0 +1,543 @@
+\documentclass[11pt]{ctexart}
+\usepackage[scale=0.8]{geometry}
+\usepackage{xifthen}
+\usepackage{graphicx, float}
+\usepackage{amsmath}
+\usepackage{enumerate}
+\usepackage{multirow}
+\usepackage{fancyvrb}
+\usepackage{listings}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{makeidx}
+\makeindex
+% \setenumerate[1]{itemsep=0pt,partopsep=0pt,parsep=\parskip,topsep=5pt}
+% \setitemize[1]{itemsep=0pt,partopsep=0pt,parsep=\parskip,topsep=5pt}
+% \setdescription{itemsep=0pt,partopsep=0pt,parsep=\parskip,topsep=5pt}
+\lstset{
+    language=C++,
+    basicstyle={\ttfamily},
+    morekeywords={char16\_t,char32\_t},
+    % keywordstyle={\bfseries\itshape\color{NavyBlue}},
+    keywordstyle={\bfseries\color{NavyBlue}},
+    % commentstyle={\sffamily\small\itshape\color{PineGreen!60!black}},
+    commentstyle={\ttfamily\color{PineGreen!80!black}},
+    % stringstyle={\rmfamily},
+    frame=none,
+    breaklines=true,
+    backgroundcolor={\color{yellow!20!white}},
+    rulecolor={\color{purple}},
+    rulesepcolor={\color{orange}},
+    % framesep=1em,
+    % rulesep=0.3em,
+    % numbers=left,
+    % numbersep=2em,
+    % numberstyle={\sffamily\footnotesize},
+    % emph={Robot},
+    % alsoletter={.},
+    % emphstyle={\bfseries\color{Rhodamine}},
+    columns=flexible, % fullflexible / flexible / fixed
+    keepspaces=true,
+}
+\newcommand{\fpicture}[3][]{\begin{figure}[H]\centering\includegraphics[width=#3\textwidth]{#2}\ifthenelse{\isempty{#1}}{}{\caption{#1}}\end{figure}}
+\newcommand{\no}[1]{\paragraph[noindent]{#1}}
+\newcommand{\farrow}[0]{$\;\Rightarrow$}
+% concat-mark of English words
+% \tolerance=1
+% \emergencystretch=\maxdimen
+% \hyphenpenalty=10000
+% \hbadness=10000
+% \CTEXsetup[format={\Large\bfseries}]{section}
+\title{}
+\author{付国}
+\date{2019K8009922008}
+\begin{document}
+% \maketitle
+% \tableofcontents
+\section{Getting Started}
+\section{Varibles and Basic Types}
+\subsection{Primitive Built-in Types}
+CPP defines a set of primitive types that include the arithmetic types and a special type named \texttt{void}. The arithmetic types, which are divided into two categories named integral types and floating-point types, represent characters, integers, boolean values, and floating-point numbers.\par
+The \texttt{bool} type represents the truth values \texttt{true} and \texttt{false}. The \verb|wchar_t|, which has a minimum size of 16 bits, is guaranteed to be large enough to hold any characters in the machine's largest character set. The types \verb|char16_t| and \verb|char32_t| are intended for Unicode characters. The \verb|char| type can be \verb|signed| \verb|char| or \verb|unsigned| \verb|char|. Which of the two types is  chosen depends on the mechine.\par
+A varible of \verb|bool| type has a value 0 or 1 when converted to \verb|int| or \verb|char| type. When we assign a floating-point value to an object of integral type, the value is truncated. The value that is stored is the part before the decimal point. When we assign an integral value to a floating-point type, the precision may be lost if the integer has more bits than the floating-point object can accomodate. If we assign an out-of-range value to an object of \verb|unsigned| type, the result is the remainder of the value modulo the number of values the target type can hold. If we assign an out-of-range value to an object of signed type, the result is undefined. We also call it an implement-defined behavior when assuming that the size of an \verb|int| is a fixed and known value. Such programs are said to be nonportable.\par
+If we use both \verb|int| and \verb|unsigned| values in an arithmetic expression, the \verb|int| value ordinarily is converted to \verb|unsigned|. Regardless of whether one or both operands are unsigned, if we subtract a value from an unsigned, we must be sure that the result cannot be negative.\par
+Each literal has a type, which is determinated by its form and value. We can write an interger literal using decimal, octal, or hexadecimal notation as follows.\begin{lstlisting}
+    20 /*decimal*/, 020 /*octal*/, 0x20, 0X20 /*hexadeciamal*/
+\end{lstlisting}
+By default, decimal literals are signed whereas octal and hexadecimal literals can be either signed or unsigned types. The floating-point is of \verb|double| type by default. We can override the types of interger or floating-point literals using a suffix and the types of character or character string literals using a prefix.\begin{lstlisting}*
+    // Character and Character String Literals
+       Prefix     Meaning                       Type
+        u         Unicode 16 character          char16_t
+        U         Unicode 32 character          char32_t
+        L         wide characters               wchar_t
+        u8        utf-8(string literals only)   char
+\end{lstlisting}
+Floating-point literals include either a decimal point or an exponent specified using scientific notation, either \verb|E| or \verb|e|.\begin{lstlisting}
+    3.1415916   3.1415E0   0.   0e0   .001
+\end{lstlisting}
+The type of the string literal is array of constant chars. Two string literals that appear adjacent to one another and that are separated only
+by spaces, tabs, or newlines are concatenated into a single literal. We use an escape sequence to represent noprintable and special-meaning characters.\begin{lstlisting}[language=TeX]
+    newline         \n      horizonal tab       \t
+    alert(bell)     \a      vertical tab        \v
+    backslash       \\      backspace           \b
+    double quote    \"      single quote        \'
+    question mark   \?      carriage return     \r
+    formfeed        \f    
+\end{lstlisting}We can also write a generalized escape sequence, which is \verb|\x| followed by one or
+more hexadecimal digits or a \verb|\| followed by one, two, or three octal digits. The \verb|\| uses at most three octal digits following it while \verb|\x| uses up all the hex digits following it.
+\subsection{Varibles}
+A variable provides us with named storage that our programs can manipulate. A simple variable definition consists of a type specifier, followed by a list of one or more variable names separated by commas, and ends with a semicolon. An object that is initialized gets the specified value at the moment it is created.\begin{lstlisting}
+    int a = 10, b = a * 2; //ok
+\end{lstlisting}
+Initialization and assignment are different operations in CPP. The compiler will not let us list initialize variables of built-in type if
+the initializer might lead to the loss of information.\begin{lstlisting}
+    int a = 0;
+    int a(0);
+    int a = {0}; //list initialization, new standard
+    int a{0}; //list initialization
+
+    double x = 3.14; int y = 1; unsigned z = 2; float v;
+    int a = x; int b(3.14); //ok
+    int c = {3.14}; int d{x}; //error: narrowing conversion required
+    double e{y}; int f{z}; //error
+    double g{v}; long h{y}; //ok
+\end{lstlisting}
+When we define a variable without an initializer, the variable is default initialized. Such variables are given the “default” value. To support separate compilation, C++ distinguishes between declarations and definitions. To obtain a declaration that is not also a definition, we add the \verb|extern| keyword and may not provide an explicit initializer. We can provide an initializer on a variable defined as \verb|extern|, but doing so overrides the \verb|extern|. It is an error to provide an initializer on an \verb|extern| inside a function.\par
+The identifiers we define in our own programs may not contain two consecutive underscores, nor can an identifier begin with an underscore followed immediately by an uppercase letter. In addition, identifiers defined outside a function may not begin with an underscore.
+\subsection{Compound Types}
+A compound type is a type that is defined in terms of another type. C++ has several compound types, two of which are references and pointers. A declaration is a base type followed by a list of declarators.\par
+Technically speaking, when we use the term reference, we mean lvalue reference. A reference is an alias. When we define a reference, we bind the reference to its initializer. Once initialized, a reference remains bound to its initial object. There is no way to rebind a reference to refer to a different object. Because there is no way to rebind a reference, references must be initialized.\par
+Dereferencing a pointer yield the object to which the pointer points.\par
+The preprocessor is a program that runs before the compiler. Preprocessor varibles are managed by the preprocessor, and not part of the \verb|std|  namespace.\begin{lstlisting}
+    int *p = NULL; //ok, NULL is preprocessed to 0
+    int *p = 0; //ok
+    int *p = 1; //error
+    int i = 0, *p = i; //error
+\end{lstlisting}
+A pointer of \verb|void*| type can point to the object of any type, which mean it is legal to assign the value of a pointer of any type to the \verb|void*|. But we cannot assign the value of \verb|void*| to a pointer to any other type.
+\subsection{\texttt{const} Qualifier}
+By default, a \verb|const| objects are local to file. We cannot change the value of a \verb|const| after we create it, so it must be initialized. When a \verb|const| object is initialized from a compile-time constant, the compiler will usually replace uses of the varible with the corresponding value during complination. If a program is split into several files and each file need to use the value in the \verb|const| object, then it should be defined in each file. However if the initializer is not a constant expression, the \verb|const| varible should be defined in one file and declared in others. An \verb|extern| qualifier is needed before the \verb|const| qualifer for the definition.\begin{lstlisting}
+    extern const int a = func(); //definition
+    extern const int a; //declaration
+\end{lstlisting}\par
+A const reference is a reference to const. A const reference can refer to const type, non-const type, a lieral or a more general expression. In contrast, a non-const reference can refer only to non-const type. A reference to const restricts only what we can do through that reference.
+\begin{lstlisting}
+    double d = 3.14; int i = 7;
+    const int &r1 = d; //r1 is bound to a temporary object of int
+    const int &r2 = i; //r2 is bound to the varible i
+\end{lstlisting}\par
+Pointers to const also mean that only the pointer thinks itself pointing to an const. But what is different with reference to const is that pointers to const cannot point to temporary objects. The pointer to const means the object to which the pointer points is const, while the const pointer means the pointer itself is const and should be initialized at the monent of the definition. In essence, the term const reference is always true because every reference is const and cannot be changed. So const reference loses its primitive meaning and becomes equivalent to reference to const.\par
+A constant expression is an expression whose value cannot change and that can be evaluated at compile time. A \verb|constexpr|, used for literal types, can also apply to functions. The arithmetic, reference, and pointer types are literal types while \verb|string| and \verb|iostream| are not literal types. The \verb|constexpr| pointers and reference can point to or bound to only global or static varibles. The \verb|constexpr| imposes a top-level \verb|const| on the objects it defines.
+\subsection{Dealing with Types}
+A type alias is a name that is a synonym for another type. We can define a type alias in one of two ways. And one is to use \verb|typedef|. The \verb|typedef| may appear as part of base type of a declaration, which defines type aliases rather than varibles. The second way is to use \verb|using| as follows.
+\begin{lstlisting}
+    using i32 = int; // i32 is a synonym for int
+
+    typedef char *pstring;
+    const pstring cstr = 0; // cstr is a constant pointer to char
+
+    // the auto type specifier
+    auto item = val1 + val2;
+    auto i = 0, *p = &i; // ok
+    auto sz = 0, pi = 3.14; // error
+
+    // auto ignores top-level const and keeps low-level const
+    const int ci = i, &cr = ci;
+    auto b = ci;  //b is an int
+    auto c = cr;  //c is an int
+    auto d = &i;  //d is an int*
+    auto e = &ci; //e is a const int*
+    const auto f = ci; //f is a const int
+    auto &g = ci; //g is a const int& bound to ci
+    auto &h = 42; //error
+    const auto &k = 42; //k is a const int&
+\end{lstlisting}\par
+We can use \verb|decltype| type specifier to get the complete type of a varible as follows.
+\begin{lstlisting}
+    decltype(f()) sum = x; //sum has whatever type f returns
+                           //arguments is needed if any
+    decltype(f) g;         //g is a function of type that f has
+    const int &cri = 10, ci = 9;
+    decltype(cri) j = i;   //j is a const int&
+\end{lstlisting}
+When we apply \verb|decltype| to an expression that is not a varible, we got the type that the expression yield. The \verb|decltype| will return a reference type for an expression that yields a left-value.
+\begin{lstlisting}
+    decltype(cri + 0) k; //k is an int
+    decltype((ci)) m;    //m is an const int&
+    decltype(*p) n;      //error: n should be an int&
+\end{lstlisting}
+\subsection{Define Our Own Data Structures}
+Under the new standard, we can apply an in-class initializer for a class member. Members without an initializer are default initialized(e.g. int to 0). An in-class initializer must either be enclosed inside curly braces or follow an = sign (ps. =\{...\} is OK). We may not specify an in-class initializer inside parentheses.
+\section{Strings, Vectors, and Arrays}
+\subsection{Namespace \texttt{using} Declarations}
+The scope operator \verb|::| says that the compiler should look in the scope of left-hand operand for the name of the right-hand operand. A using declaration lets us use a name from a namespace without qualifying the name with \verb|namespace_name::| prefix. A using declaration has a form.
+\begin{lstlisting}[language=C++, frame=none]
+    using namespace_name::varible_name;
+\end{lstlisting}
+Note that only one varible name can be declared in a using declaration. Code inside headers should not use \texttt{using} declarations.
+\subsection{Library \texttt{string} Type}
+\begin{lstlisting}
+    // several ways to initialize a string
+    string s1;
+    string s2 = s1; //copy initialization
+    string s2(s1); //direct initialization, equivalent to the above definition
+    string s3 = "value"; //copy initialization
+    string s3("value"); //direct initialization, equivalent to the above definition
+    string s4(10, 'c'); //direct initialization
+    string s5 = string(10, 'c'); //remained comments
+
+    getline(is, s)   // returns the istream &, no newline in s
+    s1 + s2
+    s.empty()        // returns bool
+    s.size()         // returns size_t
+    <, <=, >, >=     // using dictionary order, shorter is smaller
+    s[n]
+\end{lstlisting}
+The \verb|string::size_type|, defined in the string class, is a companion type of it. In the expression \verb|s.size() < n|, the value of \verb|n| will be converted into an unsigned value if n is of the \verb|int| type. When we mix strings and string or character literals, at least one operand to each + operator must be of \verb|string| type, because we cannot add up string or character literals.
+\begin{lstlisting}
+    // functions in header cctype
+    isalnum(c)  isalpha(c)
+    iscntrl(c)  isdigit(c)
+    islower(c)  isupper(c)
+    isprint(c)  ispunct(c)
+    isspace(c)  isgraph(c)
+    isxdigit(c) tolower(c)
+    toupper(c)
+\end{lstlisting}
+The names defined in cname headers are difined inside the \verb|std| namespace, whereas those defined in the \verb|.h| versions are not.
+\begin{lstlisting}
+    // the syntatic form of "range for statement"
+    for (declaration: expression)
+        statement
+    // e.g.
+    string s("Miss Diana");
+    for (auto c: s){
+        cout << c << endl;
+    }
+    // use reference auto to change the elements
+    for (auto &c: s){
+        c = toupper(c);
+    }
+    cout << "The God: " << s << endl;
+\end{lstlisting}
+\subsection{Library \texttt{vector} Type}
+A \verb|vector| is a class template. C++ has both class and function templates. Templates can be thought of as instructions to the compiler for generating classes or functions. The process that the compiler uses to create classes or functions from templates is called instantiation. 
+\begin{lstlisting}
+    // ways to initialize a vector
+    vector<T> v1
+    vector<T> v2(v1)
+    vector<T> v2 = v1
+    vector<T> v3(n, val)
+    vector<T> v4(n)
+    vector<T> v5{a, b, c, ...}
+    vector<T> v6 = {a, b, c, ...}
+\end{lstlisting}
+If the \verb|vector| holds elements of a built-in type, such as \verb|int|, then the element initializer has a value of 0. If we use braces and there is no way to use the initializers to list initialize the object, then those values will be used to construct the object.
+\begin{lstlisting}
+    vector<string> v7{10} // v7 has 10 default-initialized elements
+    vector<string> v8{10, "Diana"} // v8 has 10 strings of "Diana" 
+\end{lstlisting}
+The body of the range for must not change the size of the sequence over which it is iterating.
+\begin{lstlisting}
+    // vector operations
+    v.empty()
+    v.size()
+    v.push_back(t)
+    v[n]
+    v1 = v2
+    v1 = {a, b, c, ...}
+    v1 == v2
+    v1 != v2
+    <, <=, >, >=
+\end{lstlisting}
+We compare vectors only if we can compare the elements in the vectors. It's wrong to subscript a vector to add elements.
+\subsection{Introducing Iterators}
+All of library containers have iterators, but only a few of them support the subscript operator. Technically speaking, a \verb|string| is not a container type, but \verb|string| supports many of the container operations. As we've seen \verb|string|, like \verb|vector| has a subscript operator. Like \verb|vector|s, \verb|string|s also have iterators.
+\begin{lstlisting}
+    // standard container iterator operations
+    *iter
+    iter->mem
+    ++iter
+    --iter
+    iter1 == iter2
+    iter1 != iter2
+
+    vector<int>::iterator it1;
+    string::iterator it2;
+    vector<int>::const_iterator it3;
+    string::const_iterator it4;
+
+    vector<int> v;
+    const vector<int> cv;
+    auto it1 = v.begin(); // it1 has the type vector<int>::iterator
+    auto it2 = cv.begin(); // it2 has the type vector<int>::const_iterator
+    auto it3 = v.cbegin(); // it3 has the type vector<int>::const_iterator
+
+    // iterator arithmetic
+    iter + n
+    iter - n
+    iter += n
+    iter -= n
+    iter1 - iter2
+    >, >=, <, <=
+\end{lstlisting}
+The result type of substracting two iterators is a signed integral type named \verb|differnce_type|. Both \verb|string| and \verb|vector| define \verb|difference_type|.
+\subsection{Arrays}
+The dimension must be known at compile time, which means that the dimension must be a constant expression. By default, the elements in an array are default initialized. As with varibles of built-in type, a default-initialized array of built-in type that is defined inside a function will have undefined values. When we list initialize the elements in an array, we can omit the dimension. If we specify a dimension, the number of initializers must not exceed the specified size. If the diemension is greater than the number of initializers, the initializers are used for the first elements and any remaining elements are value initialized.
+\begin{lstlisting}
+    const unsigned sz = 3;
+    int ia1[3] = {0, 1, 2}; // an array of three ints with values 0, 1, 2
+    int a2[] = {0, 1, 2}; // an array of dimension 3
+    int a3[5] = {0, 1, 2}; // equivalent to a3[] = {0, 1, 2, 0, 0}
+
+    int a[] = {0, 1, 2};
+    int a2[] = a; // error: cannot initialize one array with another
+    a2 = a; // error: cannot assign one array to another
+    // some compilers allow array assignment as a compiler extension
+
+    int *ptrs[10];              // ptrs is an array of ten pointers to int
+    int &refs[10] = /* ? */;    // error: no arrays of references
+    int (*Parray)[10] = &array; // Parray points to an array of ten ints
+    int (&arrRef)[10] = arr;    // arrRef refers to an array of ten ints
+\end{lstlisting}
+The \verb|size_t| type is defined in the \verb|cstddef| header. There are various implications of fact that operations on arrays are often really operations on pointers. One such implication is that when we use an array as an initializer for a varible defined using \verb|auto|, the deduced type is a pointer, not an array.
+\begin{lstlisting}
+    int ia[] = {0, 1, 2};
+    auto ia2(ia); // ia2 is an int* that points to the first element in ia
+    auto ia2(&ia[0]); // equivalent to the former statement
+\end{lstlisting}
+It is worth noting that this conversion does not happen when we use \verb|decltype|.
+\begin{lstlisting}
+    decltype(ia) ia3 = {0, 1, 2, 3}; // ia3 is an array of 4 ints
+    int *beg = begin(ia3); // pointer to the first element in ia3
+    int *ed  = end(ia3); // pointer one past the last element in ia3
+\end{lstlisting}
+The result of substracting two pointers is a library type named \verb|ptrdiff_t|. Like \verb|size_t|, the \verb|ptrdiff_t| type is a machine-specific type and is defined in the \verb|cstddef| header. The library types force the index used with a subscript to be an unsigned value. The built-in subscript operator does not. The index used with a built-in subscript operator can be a negative value.
+\begin{lstlisting}
+    string s("Miss Diana");
+    char *str = s; // error: cannot initialize a char* from a string
+    const char *str = s.c_str(); // ok, and the return type is const char *
+
+    // use an array to initialize a vector
+    int int_arr = {0, 1, 2, 3, 4, 5};
+    vector<int> ivec(begin(int_arr), end(int_arr));
+    vector<int> sub_vec(int_arr + 1, int_arr + 3);
+\end{lstlisting}
+\subsection{Multidimensional Arrays}
+\begin{lstlisting}
+    // two-dimensional arrays
+    int ia[3][4] = {
+        {0, 1, 2, 3},
+        {4, 5, 6, 7},
+        {8, 9, 10, 11}
+    };
+    // the nested braces are optional
+    int ia[3][4] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+    int ia[3][4] = {{0}, {4}, {8}}; // explicitly initialize only column 0
+    int ia[3][4] = {0, 3, 6, 9}; // explicitly initialize only row 0
+    int (&b)[4] = ia[1];
+
+    auto a = "Diana";        // a is of type const char [6]
+    const char *b = "Diana"; // b is of type const char [6]
+    char *c = "Diana";       // error
+    char e[6] = "Diana";     // ok: e is of type char [6]
+    char d[] = "Diana";      // ok: d is of type char [6]
+    char f[10] = "Diana";    // ok: f is of type char [10]
+    d[2] = 'i';              // ok
+\end{lstlisting}
+\section{Expressions}
+\subsection{Fundamentals}
+We can define what most operators mean when applied to class types. Bacause such definitions gives an alternative meaning to an existing operator symbol, we refer to them as overloaded operators. When we used an overloaded operator, the meaning of the operator depends on how the operator is defined. However, the number of operands and the precedence and associativity of the operator cannot be changed.\par Every expression in C++ is either an lvalue or an rvalue. Lvalues could stand on the left-hand side of an assignment whereas rvalues could not. Roughly speaking, when we use an object as an rvalue, we use the object's value (its contents). When we use an object as an lvalue, we use the object's identity (its location in memory). Usually we cannot use an rvalue when an lvalue is required.\par There are four operators that do gurantee the order in which operands are evaluated, which include the logical AND operator (\verb|&&|), the logical OR operator (\verb;||;), the conditional operator (\verb|?:|), and the comma (\verb|,|). Order of operand evaluation is indenpendent of precedence and associativity.
+\subsection{Arithmetic Operators}
+The new standard required the quotient that results from dividing an integer by a nonzero integer to be round towards zero. The modulus operator is defined so that if \verb|m| and \verb|n| are integers and \verb|n| is nonzero, then \verb|(m/n)*n + m%n| is equal to \verb|m|. By implication, if \verb|m%n| is nonzero, it has the same sign as \verb|m|. Moreover, except for the obscure case where \verb|-m| overflows, \verb|m%(-n)| is equal to \verb|m%n|, and \verb|(-m)%n| is equal to \verb|-(m%n)|. 
+\subsection{Logical and Relational Operators}
+\subsection{Assignment Operators}
+\subsection{Increment and Decrement Operators}
+The increment and decrement operators require lvalue operands. The prefix operator return the object itself as an lvalue. The postfix operators return a copy of the object's original value as an rvalue. The advice is to use postfix operators only when necessary.
+\subsection{The Member Access Operators}
+\subsection{The Conditional Operator}
+The result of a conditional operator is an lvalue if both expressions are lvalues or if they convert to a common lvalue type. Otherwise the result is an rvalue. The conditional operator has fairly low precedence. When we embed a conditional expression in a larger expression (e.g. an output expression), we usually must parenthesize the conditional subexpression. 
+\subsection{The Bitwise Operators}
+\subsection{The \texttt{sizeof} Operator}
+\subsection{Comma Operator}
+\subsection{Type Conversions}
+Implicit conversions are carried out automatically without programmer intervention -- and sometimes without programmer knowledge.\par The implicit conversions among the arithmetic are defined to preserve precision, if possible. When the type of the unsigned operand is the same as or larger than that of the signed operand, the signed operand is converted into unsigned. When the signed operand has a larger type than the unsigned operand, the result is machine dependent.\par Class types can define conversions that the compiler will apply automatically. The compiler will apply only one class-type conversion at a time. We will see an example of when multiple conversions might be required, and will be rejected.\par We use a cast to reuest an explicit conversion. A named cast has the following form:
+\begin{lstlisting}
+    cast_name<type>(expression)
+\end{lstlisting}
+where type is the target type of the conversion, and the expression is the value to be cast. If the type is a reference, then the result is an lvalue. The cast name may be one of \verb|static_cast|, \verb|dynamic_cast|, \verb|const_cast| and \verb|reinterpret_cast|. A \verb|const_cast| changes only a low-level \verb|const| in its operand: 
+\begin{lstlisting}
+    const char *cp;
+    char *p = const_cast<char*>(cp); // ok, but writing through p is undefined
+
+    char *q = static_cast<char*>(cp); // error: cannot cast away const
+    static_cast<string>(cp); // ok: converts string literal to string
+    const_cast<string>(cp); // error: can change only constness
+\end{lstlisting}
+\par A \verb|reinterpret_cast| generally performs a low-level reinterpretation of the bit pattern of its operands.
+\begin{lstlisting}
+    int *ip;
+    char *cp = reinterpret_cast<char*>(ip);
+\end{lstlisting}
+Old-style casts:
+\begin{lstlisting}
+    type(expr); // function-style cast notation
+    (type)expr; // C-language-style cast notation
+\end{lstlisting}
+\subsection{Operator Precedence Table}
+\section{Statements}
+\subsection{Simple Statements}
+A compound statement: block
+\subsection{Statement Scope}
+\begin{lstlisting}
+    while (int i = get_num())
+        cout << i << endl;
+\end{lstlisting}
+\subsection{Conditional Statements}
+A label may not stand alone; it must precede a statement or another label. If a \verb|switch| ends with a \verb|default| case that has no work to do, then the \verb|default| label must be followed by a null statement or an empty block. It is illegal to jump from a place where a varible with an initializer is out of scope to a place where the varible is in scope, which is an error at compile time.
+\subsection{Iterative Statements}
+\subsection{Jump Statements}
+\subsection{\texttt{try} Block and Exception Handling}
+In C++, exception handling involves
+\begin{itemize}
+    \item \verb|throw| exceptions, which the detecting part uses to indicate that it encountered something it cannot handle. We say a \verb|throw| raises an exception.
+    \item \verb|try| blocks, which the handling part uses to deal with an exception. A \verb|try| block starts with the keyword \verb|try| and ends with one or more \verb|catch| causes.
+    \item A set of exception classes that are used to pass information about what happened between a \verb|throw| and an associate \verb|catch|.
+\end{itemize}
+\begin{lstlisting}
+    if (item1.isbn() != item2.isbn()){
+        throw runtime_error("Data must refer to same ISBN");
+    }
+\end{lstlisting}
+\par Throwing an exception terminates the current function and transfers control to a handler that will know how to handle the error. The type \verb|runtime_error| is one of the standard library exception types and is defined in the \verb|stdexcept| header.
+\begin{lstlisting}
+    try{
+        // program-statements
+    } catch (exception-declaration){
+        // handler-statements
+    } catch (exception-declaration){
+        // handler-satements
+    } // ...
+\end{lstlisting}
+When a \verb|catch| is selected to handle an exception, the associate block is executed. Once the \verb|catch| finished, execution continues with the statement immediately following the last \verb|catch| cause of the \verb|try| block.
+\begin{lstlisting}
+    while (cin >> item1 >> item2){
+        try{
+            // ...
+        }
+        catch (runtime_error err){
+            cout << err.what() // a const char*
+                 << "\nTry Again? Enter y or n" << endl;
+            char c;
+            cin >> c;
+            if (!cin || c == 'n')
+                break;
+        }
+    }
+\end{lstlisting}
+A try block must be followed by one or more catches. The search for a handler reverses the call chain and nested try blocks are also allowed. If no appropiate \verb|catch| is found, execution is transferred to a library function named \verb|terminate|. The behavior of the function is system dependent but is guaranteed to stop the further execution of the program.\par The \verb|exception| header defines the most general kind of exception class named \verb|exception|. It communicates only that an exception occured but provides no additional information. The \verb|stdexcept| header defines several general-purpose exception classes, which are listed as follows.
+\fpicture{2022.04.30}{1.0}
+\section{Functions}
+\subsection{Function Basics}
+\par We have no guarantees about the order in which arguments are evaluated. A return type of a function cannot be an array type or a function type. However, a function may return a pointer to an array or a function.
+\subsection{Argument Passing}
+\par Arrays cannot be copied by value. They are always converted into pointers when standing on the right-hand side of an equal mark. Just as we can define a variable that is a reference to an array, we can define a parameter that is a reference to an array. As with any array, a multidimensional array is passed as a pointer to its first element. Because we are dealing with an array of arrays, that element is an array, so the pointer is a pointer to an array.
+\par We can write a function that takes an unknown number of arguments of a single type by using an \verb|initializer_list| parameter which is defined in \verb|initializer_list| header. Operations on \verb|initializer_list| are listed as follows.
+\begin{lstlisting}
+    initializer_list<T> lst
+    initializer_list<T> lst{a, b, c...}
+    lst2(lst)
+    lst2 = lst
+    lst.size()
+    lst.begin()
+    lst.end()
+\end{lstlisting}
+\par Unlike \verb|vector|, the elements in an \verb|initializer_list| are always \verb|const| values; there is no way to change the value of an element in an \verb|initializer_list|.
+\begin{lstlisting}
+    void error_msg(initializer_list<string> il)
+    {
+        for (auto beg = il.begin(); beg != il.end(); beg++){
+            cout << *beg << " ";
+        }
+        cout << endl;
+    }
+\end{lstlisting}
+\par When we pass a sequence of values to an \verb|initializer_list| parameter, we must enclose the sequence in curly braces:
+\begin{lstlisting}
+    error_msg({"functionX", excepted, actual})
+\end{lstlisting}
+\subsection{Return Types and the Return Statement}
+\par Whether a function call is an lvalue depends on the return type of the function. Calls to functions that return reference are lvalue; other return types yield rvalues. We may also list initialize the return value. In a function that returns a built-in type, a braced list may contain at most one value, and that value must not require a narrowing conversion. If the function returns a class type, then the class itself defines how the initializers are used.
+\par A trailing return type follows the parameter list and is preceded by \verb|->|. To signal that the return follows the parameter list, we use \verb|auto| where the return type ordinarily appears.
+\begin{lstlisting}
+    auto func(int) -> int(*)[10];
+\end{lstlisting}
+As another alternative, we can use \verb|decltype| to declare the return type. Remember that the decltype of an array is still an array.
+\begin{lstlisting}
+    int new[] = {1, 2, 3, 4, 5};
+    int old[] = {6, 7, 8, 9, 10};
+    decltype(old) *func(int);
+\end{lstlisting}
+\subsection{Overloaded Functions}
+\par Note that the \verb|main| function cannot be overloaded. A parameter that has a top-level \verb|const| is distinguishable from one without top-level \verb|const|. On the other hand, we can overload based on whether the parameter is a reference (or a pointer) to a \verb|const| or non\verb|const| version of a given type; such \verb|const| are low-level.
+\begin{lstlisting}
+    string &shortString(string &s1, string &s2)
+    {
+        auto &r = shortString(const_cast<const string &>(s1), const_cast<const string &>(s2));
+        return const_cast<string &>(r);
+    }
+\end{lstlisting}
+\begin{lstlisting}
+    void print(int i) {...}
+    void print(const string &s) {...}
+    void func()
+    {
+        void print(int);
+        print("Helllo World\n"); // error
+    }
+\end{lstlisting}
+\subsection{Features for Specified Uses}
+\par Remember that the default value of parameters can be added, but can't be repeated. Make sure the default values are available when you need them at a call.
+\begin{lstlisting}
+    sz wd = 80;
+    char def = ' ';
+    sz ht();
+    string screen(sz = ht(), sz = wd, char = def);
+    string window = screen();
+
+    void func()
+    {
+        def = '*';
+        sz wd = 100;
+        window = screen(); // screen(ht(), 80, '*')
+    }
+\end{lstlisting}
+\par The \verb|inline| specification is only a request to the compiler. The compiler may choose to ignore the request. Many compilers will not inline a recursive function. A function with a long body will almost surely not be expanded inline.
+\par \verb|assert| is a preprocessor macro defined in \verb|cassert| header. The behavior of \verb|assert| depends on the status of a preprocessor varible named \verb|NDEBUG|. If \verb|NDEBUG| is defined, \verb|assert| does nothing.
+\begin{lstlisting}
+    gcc -D NDEBUG main.c
+\end{lstlisting}
+There are five names defined by the preprocessor for debugging:
+\begin{lstlisting}
+    __func__, __FILE__, __LINE__, __TIME__, __DATE__
+\end{lstlisting}
+\subsection{Function Matching}
+\par There is an overall best match if there is one and only one function for which
+\begin{itemize}
+    \item The match of each argument is no worse than the match required by any other viable function
+    \item There is at least one argument for which the match is better than any other viable function 
+\end{itemize} 
+\subsection{Pointers to Functions}
+When we use the name of a function as a value, the function is automatically converted into a pointer.
+\begin{lstlisting}
+    pf = func;
+    pf = &func; // equivalent to the above one
+\end{lstlisting}
+\par Moreover, we can use a pointer to a function to call the function to which the pointer points.
+\begin{lstlisting}
+    int a = pf(1);
+    int b = (*pf)(1); // equivalent call
+\end{lstlisting}
+\section{Classes}
+\subsection{Defining Abstract Data Type}
+\par Functions defined in the class are implicitly \verb|inline|. The operand of 
+\end{document}

@@ -1,0 +1,89 @@
+% last update time of this latex template: 2023.04.25
+\documentclass[10pt]{ctexart}
+\usepackage[scale=0.8]{geometry}
+\usepackage{xifthen}
+\usepackage{graphicx, float}
+\usepackage{enumerate,enumitem}
+\usepackage{multirow}
+\usepackage{fancyvrb}
+\usepackage{listings}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{tcolorbox}
+\usepackage{makeidx}
+\usepackage{amsmath,mathrsfs,amsfonts,amssymb,bm,amsthm,unicode-math}
+\usepackage{tikz}
+\usepackage{algorithm,algorithmicx}
+\usepackage[noend]{algpseudocode}
+\usepackage{fancyhdr}
+\usepackage{mathtools}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks = true,
+    linkcolor = blue,
+    citecolor = blue,
+    urlcolor = blue
+}
+% \setenumerate[1]{itemsep=0pt,partopsep=0pt,parsep=\parskip,topsep=5pt}
+% \setitemize[1]{itemsep=0pt,partopsep=0pt,parsep=\parskip,topsep=5pt}
+% \setdescription{itemsep=0pt,partopsep=0pt,parsep=\parskip,topsep=5pt}
+\lstset{
+    language=C++,
+    basicstyle={\ttfamily},
+    % morekeywords={Exception,String},
+    % keywordstyle={\bfseries\itshape\color{NavyBlue}},
+    keywordstyle={\bfseries\color{NavyBlue}},
+    % commentstyle={\sffamily\small\itshape\color{PineGreen!60!black}},
+    commentstyle={\ttfamily\color{PineGreen!80!black}},
+    % stringstyle={\rmfamily},
+    % frame=single,
+    breaklines=true,
+    backgroundcolor={\color{gray!20!white}},
+    % rulecolor={\color{purple}},
+    % rulesepcolor={\color{orange}},
+    % framesep=1em,
+    % rulesep=0.3em,
+    % numbers=left,
+    % numbersep=2em,
+    % numberstyle={\sffamily\footnotesize},
+    % emph={Robot},
+    % alsoletter={.},
+    % emphstyle={\bfseries\color{Rhodamine}},
+    columns=fullflexible
+}
+\newcommand{\fpicture}[3][]{\begin{figure}[H]\centering\includegraphics[width=#3\textwidth]{#2}\ifthenelse{\isempty{#1}}{}{\caption{#1}}\end{figure}}
+\newcommand{\no}[1]{\paragraph[noindent]{#1}}
+\newcommand{\farrow}[0]{$\;\Rightarrow$}
+\newcommand{\codeinline}[1]{\colorbox{gray!20!white}{\lstinline`#1`}}
+% concat-mark of English words
+% \tolerance=1
+% \emergencystretch=\maxdimen
+% \hyphenpenalty=10000
+% \hbadness=10000
+\CTEXsetup[format={\Large\bfseries}]{section}
+\definecolor{greenshade}{rgb}{0.90,0.99,0.91}
+\definecolor{redshade}{rgb}{1.00,0.90,0.90}
+\definecolor{brownshade}{rgb}{0.99,0.97,0.93}
+% BEGIN about math
+\theoremstyle{definition}
+\newtheorem{defn}{\indent 定义}[section]
+\newtheorem{lemma}{\indent 引理}[section]
+\newtheorem{thm}[lemma]{\indent 定理}
+\newtheorem{corollary}[lemma]{\indent 推论}
+\newtheorem{criterion}[lemma]{\indent 准则}
+\newtheorem{proposition}{\indent 命题}[section]
+\newtheorem{example}{\indent \color{SeaGreen}{例}}[section]
+\newtheorem*{rmk}{\indent 注}
+\renewenvironment{proof}{\par\textbf{证明.}\;}{\qed\par}
+\newenvironment{solution}{\par{\textbf{解.}}\;}{\qed\par}
+% END about math
+
+% \makeindex
+% \title{}
+% \author{}
+% \date{}
+\begin{document}
+% \maketitle
+
+% \bibliographystyle{plain}  % format
+% \bibliography{somefile.bib}  % bib filename
+\end{document}
