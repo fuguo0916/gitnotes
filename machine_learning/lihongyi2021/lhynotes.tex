@@ -1,0 +1,771 @@
+% last update time of this latex template: 2023.04.25
+\documentclass[11pt]{book}
+\usepackage{geometry}
+\geometry{
+    % scale=0.8,
+    a4paper,
+    left=2.0cm,
+    right=2.0cm,
+    top=2.5cm,
+    bottom=2.5cm
+}
+\usepackage{xifthen}
+\usepackage{graphicx, float}
+\usepackage{enumerate,enumitem}
+\usepackage{multirow}
+\usepackage{fancyvrb}
+\usepackage{listings}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{tcolorbox}
+\usepackage{makeidx}
+\usepackage{amsmath,amsfonts,amssymb,amsthm,bm}
+\usepackage{tikz}
+\usepackage{algorithm,algorithmicx}
+\usepackage[noend]{algpseudocode}
+\usepackage{fancyhdr}
+\usepackage{mathtools}
+\usepackage{hyperref}
+\usepackage{sectsty}
+% \sectionfont{\bfseries\Large\raggedright}
+\hypersetup{
+    colorlinks = true,
+    linkcolor = blue,
+    citecolor = blue,
+    urlcolor = blue
+}
+\setlength{\parskip}{1em}
+\setlength{\parindent}{0pt}
+\setlist{itemsep=0pt,partopsep=0pt,parsep=1em,topsep=0em}
+\lstset{
+    language=C++,
+    basicstyle={\ttfamily},
+    % morekeywords={Exception,String},
+    % keywordstyle={\bfseries\itshape\color{NavyBlue}},
+    keywordstyle={\bfseries\color{NavyBlue}},
+    % commentstyle={\sffamily\small\itshape\color{PineGreen!60!black}},
+    commentstyle={\ttfamily\color{PineGreen!80!black}},
+    % stringstyle={\rmfamily},
+    % frame=single,
+    breaklines=true,
+    backgroundcolor={\color{gray!20!white}},
+    % rulecolor={\color{purple}},
+    % rulesepcolor={\color{orange}},
+    % framesep=1em,
+    % rulesep=0.3em,
+    % numbers=left,
+    % numbersep=2em,
+    % numberstyle={\sffamily\footnotesize},
+    % emph={Robot},
+    % alsoletter={.},
+    % emphstyle={\bfseries\color{Rhodamine}},
+    columns=fullflexible
+}
+\newcommand{\fpicture}[3][]{\begin{figure}[H]\centering\includegraphics[width=#3\textwidth]{#2}\ifthenelse{\isempty{#1}}{}{\caption{#1}}\end{figure}}
+\newcommand{\no}[1]{\paragraph[noindent]{#1}}
+\newcommand{\farrow}[0]{$\;\Rightarrow$}
+\newcommand{\codeinline}[1]{\colorbox{gray!20!white}{\lstinline`#1`}}
+% concat-mark of English words
+% \tolerance=1
+% \emergencystretch=\maxdimen
+% \hyphenpenalty=10000
+% \hbadness=10000
+% \CTEXsetup[format={\Large\bfseries}]{section}
+\definecolor{greenshade}{rgb}{0.90,0.99,0.91}
+\definecolor{redshade}{rgb}{1.00,0.90,0.90}
+\definecolor{brownshade}{rgb}{0.99,0.97,0.93}
+% BEGIN about math
+% \theoremstyle{definition}
+% \newtheorem{defn}{\indent 定义}[section]
+% \newtheorem{lemma}{\indent 引理}[section]
+% \newtheorem{theorem}[lemma]{\indent 定理}
+% \newtheorem{corollary}[lemma]{\indent 推论}
+% \newtheorem{criterion}[lemma]{\indent 准则}
+% \newtheorem{proposition}{\indent 命题}[section]
+% \newtheorem{example}{\indent \color{SeaGreen}{例}}[section]
+% \newtheorem*{remark}{\indent 注}
+% \renewenvironment{proof}{\par\textbf{证明.}\;}{\qed\par}
+% \newenvironment{solution}{\par{\textbf{解.}}\;}{\qed\par}
+% END about math
+
+
+% \makeindex
+\title{Notes of Hongyi-Lee's Machine Learning, 2021}
+\author{FG}
+\date{Spring, 2023}
+\begin{document}
+\maketitle
+\tableofcontents
+\chapter{Introduction}
+\section{Steps}
+\begin{itemize}
+    \item Function with unknown parameters
+    \item Define loss function form training data
+    \begin{itemize}
+        \item MAE: Mean Absolute Error
+        \item MSE: Mean Square Error
+        \item Cross Entropy
+    \end{itemize}
+    \item Optimization
+    \begin{itemize}
+        \item Gradient Descent: $\Delta  W=-\eta\times Gradient$, where $\eta$ is the learning rate.
+    \end{itemize}
+\end{itemize}
+
+Linear models have severe limitation. Such kind of limitation is called \textbf{model bias}.
+
+Any curve could be approximated by a piecewise linear curve. Any piecewise linear curve can be decomposed into $\textit{constant} + \textit{sum of hard sigmoid like functions}$. Hard sigmoid like functions could be approximated by sigmoid like functions as $c \times sigmoid(Wx+b)$. In conclusion,
+$$ y = b + \Sigma_i c_i\ sigmoid(b_i + \Sigma_j W_{ij} x_j) $$
+$$ y = b + c^{T} \sigma(\mathbb{b} + Wx) $$
+$$ \theta^1 \leftarrow \theta^0 - \eta \nabla L(\theta^0) $$
+
+Another way to approximate hard sigmoid is by two rectified linear units (ReLU).
+
+\chapter{Self-attention}
+\noindent 2023.04.11
+\section{Sophisticated Input}
+\begin{itemize}
+    \item Input might be a set of vectors (indefinite length)
+    \item e.g. Input is a sentence.
+    \item e.g. Input is a set of frames of sounds. (1 frame for 25ms)
+    \item e.g. Input is a graph. (e.g. social network)
+\end{itemize}
+\section{Sophisticated Output}
+\begin{itemize}
+    \item Sequence to sequence (fixed length)
+    \item Sequence to one
+    \item Sequence to sequence (indefinite length, e.g. translation)
+\end{itemize}
+\section{Sequence Labeling}
+\begin{itemize}
+    \item Focus on the first case: Sequence to sequence (fixed length)
+    \item Fully Connected: One to one.
+    \item Fully Connected: You may use fixed sized window. Window to one.
+    \item Self Attention: takes whole sequence as the input, and outputs a sequence, in which each vector carries information of its context.
+\end{itemize}
+\section{Self Attention}
+\begin{itemize}
+    \item \textit{Attention is all you need}: proposes transformer by Google.
+    \item For each vector: Find the relevant vectors in a sequence by $\alpha$ index, which is calculated out via dot-product (almost always used) or additive (seldom used)
+\end{itemize}
+
+\begin{displaymath}
+    \bm{q^1}=W^q\bm{a^1}
+\end{displaymath}
+where $W^q$ is the query matrix and $\bm{q^1}$ is the query of $\bm{a^1}$.
+
+\[\bm{k^2}=W^k\bm{a^2}\]
+where $W^k$ is the key matrix and $\bm{k^2}$ is the key of $\bm{a^2}$.
+
+For $\bm{a^1}$, the relevance of $\bm{a^2}$ is denoted by $\alpha_{1,2}$ and \[\alpha_{1,2}=\bm{q^1}\cdot\bm{k^2}\]
+
+Then, do softmax: \[\alpha_{1,i}^{\prime}=\frac{\exp(\alpha_{1,i})}{\sum_j\exp(\alpha_{1,j})}\]
+
+Calculate $v^1$ which is the value vector of $\bm{a_1}$: \[\bm{v^1}=W^v\bm{a^1}\]
+
+Get the final output $\bm{b^1}$:
+\[
+    \bm{b^1}=\sum_i\alpha_{1,i}^{\prime}\bm{v^^i}   
+\]
+
+Overall,
+\begin{displaymath}
+    \begin{cases}
+        Q=W^q I\\
+        K=W^k I\\
+        V=W^v I\\
+        A=K^T Q\\
+        A^{\prime}=\mathrm{ColumnwiseSoftmax}(A)\\
+        B=VA^{\prime}\\
+    \end{cases}
+\end{displaymath}
+
+All we need to train is $W^q,W^k,W^v$.
+
+\section{Multi-head Self Attention}
+Take head number 2: Double $Q,K,V$ matrix.
+
+\section{Positional Encoding}
+\begin{itemize}
+    \item No position information in self-attention.
+    \item Each position has a unique positional vector $\bm{e^i}$
+    \item hand-crafted
+\end{itemize}
+
+\section{Many Applications}
+\begin{itemize}
+    \item Transformer
+    \item Bert
+    \item Self Attention for Speech
+    \begin{itemize}
+        \item to reduce complexity: Truncated Self Attention
+    \end{itemize}
+    \item Self Attention for Image
+    \begin{itemize}
+        \item Every pixel is a 3-dim vector, and an image is a vector set
+        \item Self Attention GAN
+        \item Detection Transformer (DETR)
+    \end{itemize}
+\end{itemize}
+
+\section{Self Attention v.s. CNN}
+\begin{itemize}
+    \item CNN: self-attention that can only attends in receptive field. CNN is simplified self-attention.
+    \item Self-attention: CNN with learnable receptive field. Self-attention ia the complex version of CNN.
+    \item \textit{On the relationship between Self-Attention and Convolutional Layers} [\href{https://arxiv.org/abs/1911.03584}{arXiv}]
+\end{itemize}
+
+\section{Self Attention v.s. RNN}
+\begin{itemize}
+    \item It is hard to consider remote inputs as for RNN
+    \item RNN is nonparallel
+    \item Transformers are RNNs: Fast Autoregressive Transformers with Linear Attention. [\href{https://arxiv.org/abs/2006.16236}{arXiv}]
+\end{itemize}
+
+\section{Self Attention for Graph}
+\begin{itemize}
+    \item Consider edge: pay attention only to connected nodes
+    \item Self-attention is one type of Graph Neural Network (GNN).
+\end{itemize}
+
+\chapter{Transformer}
+\noindent 2023.04.11 [\href{https://www.youtube.com/watch?v=n9TlOhRjYoc&list=PLJV_el3uVTsMhtt7_Y6sgTHGHp1Vb2P2J&index=12}{YouTube}]
+\section{Sequence-to-sequence (Seq2seq)}
+\begin{itemize}
+    \item The output length is determined by model
+    \item Examples:
+    \begin{itemize}
+    \item
+        Speech Recognition
+    \item
+        Machine Translation
+    \item
+        Speech Translation (e.g. Hokkien speech to Mandarin text, for
+        languages without text)
+    \item
+        Seq2seq for chat-bot
+    \item
+        Most NLP applications can be solve as Question Answering (QA)
+        problems.
+    \item
+        Seq2seq for Syntactic Parsing: sentence to tree (represented by
+        sequence)
+    \item
+        Seq2seq for Multi-label Classification
+    \item
+        \href{https://arxiv.org/abs/2005.12872}{Seq2seq for Object
+        Detection}
+    \end{itemize}
+\end{itemize}
+
+\section{Encoder}
+\begin{itemize}
+    \item
+        You may use RNN or CNN
+    \item
+        Use self-attention in transformer
+    \item
+        Use layer normalization instead of batch normalization
+        {[}\href{https://arxiv.org/abs/2003.07845}{think-link}{]}
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{LEC05/lec05_01.png}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{LEC05/lec05_02.png}
+\end{figure}
+
+\section{Decoder}
+\subsection*{Autoregressive (AT)}
+\noindent (take speech recognition as an example)
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{LEC05/lec05_04.png}
+\end{figure}
+
+\begin{itemize}
+    \item Add BEGIN Token and END Token
+    \item Use masked self-attention
+    \item We do not know the correct output length
+\end{itemize}
+
+\subsection*{Non-autoregressive (NAT)}
+\begin{itemize}
+    \item The input is a sequence of BEGINs.
+    \item One way is to use another predictor for output length.
+    \item Another way is to yield a very long sequence, ignoring tokens after END.
+\end{itemize}
+
+\section{Cross Attention}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.33\textwidth]{LEC05/lec05_05.png}
+\end{figure}
+
+\section{Cross Attention}
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.33\textwidth]{LEC05/lec05_06.png}
+\end{figure}
+
+\section{Guided Attention}
+\noindent also called Monotonic Attention or Location-aware Attention
+
+In some tasks, input and output are monotonically aligned. For example, speech recognition, TTS, etc.
+
+\section{Beam Search}
+The Greedy Strategy is not always the best.
+
+\chapter{GAN}
+\noindent 2023.04.10 [\href{https://www.youtube.com/watch?v=4OWp0wDu6Xw&list=PLJV_el3uVTsMhtt7_Y6sgTHGHp1Vb2P2J&index=14}{YouTube}]
+
+A generator is a network which takes $x$ and $z$ as the input, where we get $z$ by sampling from a simple distribution, such as Gaussian Distribution. And the output $y$ is a complex distribution.
+
+Take video prediction for example. In traditional way, the input $x$ is previous frames, and the output $y$ is the next frame. Because all common prebabilities exist in $x$ while there is no specific choice. So we add a simple distribution $z$, then the output $y$ turns out to be a distribution.
+
+\section{Why Distribution?}
+\begin{itemize}
+    \item Especially for tasks that need \textit{creativity} (same input to different outputs)
+    \item Examples: Drawing (e.g. Characters with red eyes), Chat-bot
+\end{itemize}
+
+\section{Animated Face Generation}
+\begin{itemize}
+    \item Unconditional generation: $Generator:z\to y$, where $z$ is a low-dim vector sampled from Normal Distribution, and $y$ is a high-dim vector which obeys a complex distribution, e.g. an animated face picture. A simple distribution like Normal Distribution for $z$ is enough.
+    \item We also need to train a discriminator, which takes an image as the input and outputs a scalar reflecting how real/fake the image is.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{GAN/GAN_01.png}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\textwidth]{GAN/GAN_02.png}
+\end{figure}
+
+\section{Algorithm}
+\begin{itemize}
+    \item Initialize generator and discriminator.
+    \item In each training iteration:
+    \begin{enumerate}
+        \item Fix generator $G$, and update discriminator $D$ (classification or regression)
+        \item Generator learns to \textit{fool} the discriminator.
+    \end{enumerate}
+\end{itemize}
+
+\section{Theory behind GAN}
+\begin{displaymath}
+    G^{\ast}=\arg\min_{G} Div(P_G,P_{data})
+\end{displaymath}
+where $Div(P_G,P_{data})$ means the divergence between distribution $P_G$ and $P_{data}$.
+
+\begin{displaymath}
+    D^{\ast}=\arg\max_D V(D,G)
+\end{displaymath}
+and objective function for $D$:
+\begin{displaymath}
+    V(G,D)=E_{y\sim P_{data}}\left(\log D(y)\right)+E_{y\sim P_G}\left(\log(1-D(y))\right)
+\end{displaymath}
+which is the negetive cross entropy.
+
+Finally,
+\begin{displaymath}
+    G^{\ast}=\arg\min_G Div(P_G,P_{data})=\arg\min_G\max_D V(G,D)
+\end{displaymath}
+
+$V(D,G)$ is related to the JS Divergence, and there are many substitutes for $V(D,G)$
+
+\section{Tips for GAN Training}
+\subsection*{JS Divergence is not suitable sometimes}
+\begin{itemize}
+    \item Because in most cases, $P_G$ and $P_{data}$ are not overlapped owe to the nature of data and sampling.
+    \item JS divergence is always $\log 2$ if two distributions do not overlap.
+\end{itemize}
+\subsection*{From JS Divergnce to Wasserstein Distance}
+\begin{itemize}
+    \item Considering one distribution $P$ as a pile of earth, and another distribtution $Q$ as the target.
+    \item The average distance the earth mover has to move the earth is the Wasserstein Distance.
+    \item Sometimes there are many possible \textit{moving plans}. So use the \textit{moving plan} with the smallest average distance to define Wasserstein Distance.
+\end{itemize}
+\subsection*{WGAN}
+Evaluate Wasserstein Distance between $P_G$ and $P_{data}$:
+\begin{displaymath}
+    \max_{D\in \text{1-Lipschitz}}\{E_{y\sim P_{data}}\left(D(y)\right)-E_{y\sim P_G}\left(D(y)\right)\}
+\end{displaymath}
+where $D\in \text{1-Lipschitz}$ means that $D$ has to be smooth enough.
+\subsection*{There are some other generative models}
+\begin{itemize}
+    \item Variational Auto-encoder (VAE)
+    \item FLOW-based Model
+\end{itemize}
+They are also hard to train and do not outperform GAN.
+
+\section{Evaluation of GAN}
+Input \textbf{one} data into an Off-the-shelf Image Classifier, and more concentrated distribution means higher visual quality.
+
+Diversity problems like mode collapse and mode dropping usually occur. So you may input tghe generated images into a classifier, and uniform means higher variety.
+
+Inception Score (IS): Good quality, large diversity $\Longrightarrow$ Large IS
+
+Frechet Inception Distance (FID): using the vector just before softmax; Frechet distance between two Gaussians.
+
+We do not want to memory by GAN.
+
+\section{Conditional Generator}
+\subsection*{Text-to-image}
+Back to the first question, and set $x$ to some description like "blue eyes and black hair".
+
+\section{Learning from Unpaired Data}
+\subsection*{Image Style Transfer}
+From Domain $\mathcal{X}$ to Domain $\mathcal{Y}$: $G_{\mathcal{X}\to\mathcal{Y}}$
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.7\textwidth]{GAN/GAN_03.png}\\
+    \includegraphics[width=0.7\textwidth]{GAN/GAN_04.png}
+\end{figure}
+
+\chapter{Self-supervised Learning}
+\noindent 2023.04.12 [\href{https://www.youtube.com/watch?v=e422eloJ0W4&list=PLJV_el3uVTsMhtt7_Y6sgTHGHp1Vb2P2J&index=18}{YouTube}]
+
+\section{Names}
+\begin{itemize}
+    \item BERT: \textbf{B}idirectional \textbf{E}ncoder \textbf{R}epresentations form \textbf{T}ransformers
+    \item ELMo: \textbf{E}mbeddings from \textbf{L}anguage \textbf{Mo}dels
+    \item ERNIE: \textbf{E}nhanced \textbf{R}epresentation through K\text{n}owledge \textbf{I}nt\textbf{e}gration
+    \item Big Bird: Transformers for Longer Sequences
+\end{itemize}
+
+\section{Bert}
+\begin{itemize}
+    \item Proposed in 2018, with 340M parameters
+    \begin{figure}[H]
+        \centering
+        \begin{tabular}{lc}
+            \hline
+            Model & Parameter Amount\\
+            \hline
+            ELMO & 94M\\
+            BERT & 340M\\
+            GPT-2 & 1542M\\
+            Megatron & 8B\\
+            T5 & 11B\\
+            GPT-3 & 175B\\
+            \hline
+        \end{tabular}
+        % \caption{<caption>}
+        % \label{<label>}
+    \end{figure}
+    \item Tranformer Encoder
+    \item Masking Input: Randomly masking some tokens (replacing with a special token or random tokens) [\href{https://arxiv.org/abs/1810.04805}{arXiv}]
+    \item Next Sentence Prediction
+    \begin{itemize}
+        \item Input: \codeinline{[CLS] + Sentence 1 + [SEP] + Sentence 2}
+        \item Output: Y/N (This approach is not helpful. [\href{https://arxiv.org/abs/1907.11692}{arXiv}])
+        \item SOP (Sentence Order Prediction): used in ALBERT [\href{https://arxiv.org/abs/1909.11942}{arXiv}]
+    \end{itemize}
+    \item Trained to fill blanks, used for various downstream tasks.
+    \item Semi-supervised: The upstream task (pretrain) is unsupervised, while the downstream tasks are usually supervised.
+    \item GLUE: General Language Understanding Evaluation
+    \begin{itemize}
+        \item Corpus of Linguistic Acceptability (CoLA)
+        \item Stanford Sentiment Treebank (SST-2)
+        \item \dots (9 tasks in total) (using 9 fine-tuned models based on Bert)
+    \end{itemize}
+\end{itemize}
+
+\section{How to use BERT?}
+\subsection*{Case 1}
+\begin{itemize}
+    \item Input: sequence
+    \item Output: class
+    \item Example: sentiment analysis
+    \item The BERT part is initialized with pretrained weights and the Linear part is randomly initialized.
+\end{itemize}
+\subsection*{Case 2}
+\begin{itemize}
+    \item Input: sequence
+    \item Output: sequence with the same size as input
+    \item Example: POS tagging
+\end{itemize}
+\subsection*{Case 3}
+\begin{itemize}
+    \item Input: two sequences
+    \item Output: a class
+    \item Example: Natural Language Inference (NLI)
+\end{itemize}
+\subsection*{Case 4}
+\begin{itemize}
+    \item Extraction-based Question Answering (QA)
+    \item Document: $D=\{d_1,d_2,\dots,d_N\}$
+    \item Query: $Q=\{q_1,q_2,\dots,q_M\}$
+    \item The input is $D$ and $Q$, and the output is two intergers $s$ and $e$ (start and end), and the final answer is $A=\{d_s,\dots,d_e\}$.
+\end{itemize}
+
+\section{Pretraining a seq2seq model}
+\begin{itemize}
+    \item Bert is only the transformer encoder.
+    \item The input of encoder is corrupted data, the the output of decoder is supposed to be the reconstructed data.
+    \item How to corrupt sequence? MASS (replacing with a special token) / BART (ensemble method)
+    \item T5-Comparison
+    \begin{itemize}
+        \item Transfer Text-to-Text Transformer (T5)
+        \item Colossal Clean Crawled Corpus (C4)
+    \end{itemize}
+\end{itemize}
+
+\section{Why does BERT work?}
+\begin{itemize}
+    \item \textit{You shall know a word by the company it keeps}. Word embedding (CBOW model).
+    \item Bert is contextualized word embedding.
+    \item Applying BERT to protein, DNA, music classification.
+\end{itemize}
+
+\section{Multi-lingual BERT}
+\begin{itemize}
+    \item Example: QA: Pretrained in 104 languages. Trained only in English, but working well in Chinese.
+    \item Mean Reciprocal Rank (MRR): Higher MRR, better alignment.
+    \item The category of language is also reflected in word vectors. [\href{https://arxiv.org/abs/2010.10041}{arXiv}]
+\end{itemize}
+
+\section{GPT}
+\begin{itemize}
+    \item Predict Next Token
+    \item Works like tranformer decoder.
+\end{itemize}
+\subsection*{How to use GPT?}
+\begin{itemize}
+    \item "In-context" Learning: task description \& examples \& prompt (You do not need to train for the specific task.)
+    
+    Few-shot Learning $\Rightarrow$ One-shot Learning $\Rightarrow$ Zero-shot Learning (no examples)
+\end{itemize}
+\subsection*{Beyond Text}
+\begin{itemize}
+    \item Image: SimCLR. [\href{https://arxiv.org/abs/2002.05709}{arXiv}] [\href{https://github.com/google-research/simclr}{GitHub}]
+    \item Image: BYOL (Bootstrap your own latent) [\href{https://arxiv.org/abs/2006.07733}{arXiv}]
+    \item Speech
+\end{itemize}
+
+\chapter{Auto-encoder}
+\noindent 2023.04.14 [\href{https://www.youtube.com/watch?v=3oHlf8-J3Nc&list=PLJV_el3uVTsMhtt7_Y6sgTHGHp1Vb2P2J&index=22}{YouTube}]
+
+Auto-encoder, which is an old technology, is also a kind of self-supervised learning.
+
+\section{Basic Idea of Auto-encoder}
+\begin{itemize}
+    \item NN Encoder: from image to vector
+    \item NN Decoder: from vector to image
+\end{itemize}
+\begin{itemize}
+    \item To make input of encoder and output of decoder as close as possible (this process is also called \textbf{recomstruction}). (We have seen this idea in \textbf{Cycle GAN})
+    \item The intermediate vector is called \textbf{enbedding}, or \textbf{representation}, or \textbf{code}. It can be used for downstream tasks.
+    \item The intermediate is called bottleneck because of its low-dim feature. (Dimension Reduction)
+\end{itemize}
+
+\section{Why Auto-encoder?}
+\begin{itemize}
+    \item Auto-encoder is not a new idea. Hinton, 2006, \textit{Reducing the dimentionality of data with neural networks}.
+    \item Variant: Denoising Auto-encoder. (2008) Adding noise precedes the encoder and decoder.
+    \begin{itemize}
+        \item BERT can be considered as denoising auto-encoder.
+    \end{itemize}
+\end{itemize}
+
+\section{Feature Disentanglement}
+\begin{itemize}
+    \item Representation includes information of different aspects
+    \item Feature Disentangle: To know the specific meaning of each dimension of representation
+    \item Application: Voice Conversion
+\end{itemize}
+
+\section{Discrete Latent Representation}
+\begin{itemize}
+    \item Representation could be binaries, even one-hotm instead of real numbers.
+    \item Vector Quantized Variantional Auto-encoder (VQVAE) [\href{https://arxiv.org/abs/1711.00937}{arXiv}]
+    \begin{itemize}
+        \item We have a codebook comprising a set of vectors (representations)
+        \item Compute similarity between the outcome representation and vectors in codebook.
+        \item The most similar one is the input of decoder
+        \item For speech, the codebook represents phonetic information.
+    \end{itemize}
+\end{itemize}
+
+\section{More Applications}
+\begin{itemize}
+    \item Text as Representation: The enbedding could be a word sequence, which usually turns out to be the abstract of the input article.
+    \item NN Decoedr used as Generator
+    \item NN Encoder as Compression, and NN Decoder as Decompression
+    \item Anomaly Detection
+    \begin{itemize}
+        \item First, use normal data to train a pair of encoder and decoder
+        \item If the output is close to the input, it's judged normal, Otherwise, it is abnormal.
+    \end{itemize}
+\end{itemize}
+
+\chapter{Adversarial Attack}
+\section{How to attack?}
+Examples of Attack:
+\begin{itemize}
+    \item Add some inperceptible noise to benign images and then generate attacked images.
+    \item The outcome changes after attacking.
+    \item Non-targeted or Targeted
+\end{itemize}
+\begin{displaymath}
+    \begin{aligned}
+        y^0&=f(x^0)\\
+        y&=f(x)
+    \end{aligned}
+\end{displaymath}
+
+To make $y$ and $\hat{y}$ as different as possible, we should define the loss function.
+
+For non-targeted attack:
+\begin{displaymath}
+    L(x)=-e(y,\hat{y})
+\end{displaymath}
+For targeted attack:
+\begin{displaymath}
+    L(x)=-e(y,\hat{y})+e(y,y^{target})
+\end{displaymath}
+
+Also, $x$ and $x^0$ should be as close as possible. So,
+\begin{displaymath}
+    x^{\ast}=\arg\min_{d(x^0,x)\le\epsilon}L(x)
+\end{displaymath}
+where $d$ could be L2-norm or L-infinity.
+
+L2-norm:
+\[
+    d(x^0,x)=\Vert\Delta x\Vert_2=(\Delta x_1)^2+(\Delta x_2)^2+(\Delta x_3)^2+\dots
+\]
+L-infinity:
+\begin{displaymath}
+    d(x^0,x)=\Vert\Delta x\Vert_{\infty}=\max\{\vert\Delta x_1\vert,\vert\Delta x_2\vert,\vert\Delta x_3\vert,\dots\}
+\end{displaymath}
+
+Get $x^{\ast}$ by \textbf{Fast Gradient Sign Method (FGSM)}[\href{https://arxiv.org/abs/1412.6572)}{arXiv}]
+
+\section{White Box v.s. Black Box}
+\begin{itemize}
+    \item In previous attacks, we know the network parameters $\theta$, which is called \textbf{White Box Attack}.
+    \item Are we safe if we do not release models? No, because \textbf{Block Box Attack} is possible.
+\end{itemize}
+\subsection{Black Box Attack}
+\begin{itemize}
+    \item If the training data is shared, you may use a proxy network.
+    \item Black box attack is also easy to work for non-targeted attack. [\href{https://arxiv.org/pdf/1611.02770.pdf}{arXiv}]
+    \item One pixel attack
+    \item Universal Adversarial Attack [\href{https://arxiv.org/abs/1610.08401}{arXiv}]
+    \item Beyond images
+    \begin{itemize}
+        \item Speech Processing: \textit{Detect Sythesized Speech} could also be attacked
+        \item Natural Language Processing
+        \item Attack in physical world: add noise in physical world. [\href{https://www.cs.cmu.edu/~sbhagava/papers/face-rec-ccs16.pdf}{src}]
+        \item Adversarial Reprogramming
+        \item \textit{Backdoor} in Model [\href{https://arxiv.org/abs/1804.00792}{arXiv}]
+    \end{itemize}
+\end{itemize}
+\section{Defense}
+\subsection{Passive Defense}
+\begin{itemize}
+    \item Add filters, such as smoothing, compression, generator, etc.
+    \item Passive defense is brittle if someone else knows it. So you may add some randomization.
+\end{itemize}
+\subsection{Proactive Defense}
+\begin{itemize}
+    \item Adversarial Training: Training a model that is robust to adversarial attack. Another view of data augmentation.
+\end{itemize}
+
+\chapter{Explainable Machine Learning}
+\noindent 2023.04.14 [\href{https://www.youtube.com/watch?v=WQY85vaQfTI&list=PLJV_el3uVTsMhtt7_Y6sgTHGHp1Vb2P2J&index=26}{YouTube}]
+\section{Why do we need Explainable ML?}
+\begin{itemize}
+    \item Correct Answers $\neq$ Intelligent
+    \item Loan issues / medical diagnosis / court / self-driving
+    \item We can improve ML model based on explaination.
+\end{itemize}
+\section{Interpretable v.s. Powerful}
+\begin{itemize}
+    \item Linear models are more interpretable but less powerful.
+    \item Deep network is less interpretable but more powerful.
+    \item Let's make deep networks explainable!
+    \item Decision tree is both interpretable and powerful. While random forest, which is based on decision tree, is also hard to explain.
+\end{itemize}
+\section{The Goal of Explainable ML}
+\begin{itemize}
+    \item Completely know how an ML model works?
+    \item But we trust the decision of humans!
+    \item To make people (your customers, your boss, yourself) comfortable.
+\end{itemize}
+\section{Categories}
+\noindent Local Explaination / Global Explaination
+\section{Which component is critical?}
+\begin{itemize}
+    \item Randomly mask or remove some components.
+    \item Saliency Map:
+    \item
+    \begin{itemize}
+        \item Given a set of inputs $\{x_1,\dots,x_n\}$ and the evaluation $e$, then we get
+        \[
+            |\frac{\Delta e}{\Delta x_k}|\to|\frac{\partial e}{\partial x_k}|
+        \]
+        \item Limitation: \textbf{Noisy Gradient}. \par
+        You may solve this problem by \textbf{SmoothGrad}, which randomly adds noises to the input image, get saliency maps of the noisy images, and averages them.
+        \item Limitation: \textbf{Gradient Saturation}. Gradient cannot always reflect importance.\par
+        Examples: in saturated region, maybe
+        \[
+            \frac{\partial\,elephant}{\partial\,length}\approx 0
+        \]
+        You may solve this problem by \textbf{Integrated Gradient (IG)} [\href{https://arxiv.org/abs/1611.02639}{arXiv}]
+    \end{itemize}
+\end{itemize}
+\section{How a network processes the input data?}
+\begin{itemize}
+    \item Visualization
+    \item Attention
+    \item Probing
+\end{itemize}
+\section{Global Explaination}
+\begin{itemize}
+    \item Suppose that we generate the picture $X$ to make the output of filter 1 as big as possible.
+    \[
+        X^{\ast}=\arg\max_X\sum_i\sum_j a_{ij}
+    \]
+    The $X^{\ast}$ contains the patterns that filter 1 can detect.
+    \item What does a digit look like for CNN? (e.g. digit classifier)\par
+    If we want the $X^{\ast}$ such that:
+    \begin{displaymath}
+        X^{\ast}=\arg\max_X y_i
+    \end{displaymath}
+    Can we see digits? No, we can only see noise.\par
+    So, we use:
+    \begin{displaymath}
+        X^{\ast}=\arg\max_X (y_i+R(X))
+    \end{displaymath}
+    where the $R(X)$ indicates how likely $X$ is a digit, which may be difined as follows, where instuition is to make white color as less as possible.
+    \begin{displaymath}
+        R(X)=-\sum_{i,j}|X_{ij}|
+    \end{displaymath}
+    \item Another way is to use generator.\par
+    We generate image $X$ from z, a low-dim vector, through an image generator. Then we input image $X$ into an image classifier and get the output $y$.\par
+    Now the task turns from
+    \begin{displaymath}
+        X^{\ast}=\arg\max_X y_i
+    \end{displaymath}
+    into
+    \begin{displaymath}
+        \begin{cases}
+            z^{\ast}&=\arg\max_z y_i\\
+            x^{\ast}&=G(z^{\ast})
+        \end{cases}
+    \end{displaymath}
+\end{itemize}
+% \bibliographystyle{plain}  % format
+% \bibliography{somefile.bib}  % bib filename
+\end{document}
