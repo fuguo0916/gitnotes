@@ -1,6 +1,14 @@
-% last update time of this latex template: 2023.04.25
+% last update time of this latex template: 2023.04.27
 \documentclass[10pt]{ctexart}
-\usepackage[scale=0.8]{geometry}
+\usepackage{geometry}
+\geometry{
+    % scale=0.8,
+    a4paper,
+    left=2.0cm,
+    right=2.0cm,
+    top=2.5cm,
+    bottom=2.5cm
+}
 \usepackage{xifthen}
 \usepackage{graphicx, float}
 \usepackage{enumerate,enumitem}
@@ -10,7 +18,7 @@
 \usepackage[dvipsnames]{xcolor}
 \usepackage{tcolorbox}
 \usepackage{makeidx}
-\usepackage{amsmath,mathrsfs,amsfonts,amssymb,bm,amsthm,unicode-math}
+\usepackage{amsmath,mathrsfs,amsfonts,amssymb,bm,amsthm}
 \usepackage{tikz}
 \usepackage{algorithm,algorithmicx}
 \usepackage[noend]{algpseudocode}
@@ -23,9 +31,11 @@
     citecolor = blue,
     urlcolor = blue
 }
-% \setenumerate[1]{itemsep=0pt,partopsep=0pt,parsep=\parskip,topsep=5pt}
-% \setitemize[1]{itemsep=0pt,partopsep=0pt,parsep=\parskip,topsep=5pt}
-% \setdescription{itemsep=0pt,partopsep=0pt,parsep=\parskip,topsep=5pt}
+\usepackage{sectsty}
+\sectionfont{\bfseries\Large\raggedright}
+\setlength{\parskip}{1em}
+\setlength{\parindent}{0pt}
+\setlist{itemsep=0pt,partopsep=0pt,parsep=1em,topsep=0em}
 \lstset{
     language=C++,
     basicstyle={\ttfamily},
@@ -78,12 +88,15 @@
 % END about math
 
 % \makeindex
+% \bibliographystyle{plain}  % format
 % \title{}
 % \author{}
 % \date{}
 \begin{document}
 % \maketitle
+% \tableofcontents
 
-% \bibliographystyle{plain}  % format
+
 % \bibliography{somefile.bib}  % bib filename
+% \printindex
 \end{document}
