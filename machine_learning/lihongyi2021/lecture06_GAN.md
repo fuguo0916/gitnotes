@@ -13,7 +13,7 @@
 
 A generator is a network which takes $x$ and $z$ as the input, where we get $z$ by sampling from a simple distribution, such as Gaussian Distribution. And the output $y$ is a complex distribution.
 
-Take video prediction for example. In traditional way, the input $x$ is previous frames, and the output $y$ is the next frame. Because all common probabilities exists in $x$ while there is no specific choice. So we add a simple distribution $z$, then the output $y$ turns out a distribution.
+Take video prediction for example. In traditional way, the input $x$ is previous frames, and the output $y$ is the next frame. Because all common probabilities exist in $x$ while there is no specific choice. So we add a simple distribution $z$, then the output $y$ turns out a distribution.
 
 ### Why distribution?
 + Especially for tasks that need "creativity" (same input to different outputs)
@@ -22,7 +22,7 @@ Take video prediction for example. In traditional way, the input $x$ is previous
 ### Animated Face Generation
 
 + Unconditional generation: $Generator: z \to y$, where $z$ is a low-dim vector sampled from Normal Distribution, and $y$ is a high-dim vector which obeys a complex distribution, e. g. an animated face picture. A simple distribution like Normal Distribution for $z$ is OK.
-+ We also need to train a discriminator, which take a image as input and outputs a scalar reflecting how real/fake the image is.
++ We also need to train a discriminator, which takes a image as input and outputs a scalar reflecting how real/fake the image is.
 
 ### Basic Idea of GAN
 

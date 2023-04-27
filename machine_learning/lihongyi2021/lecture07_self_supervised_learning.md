@@ -29,7 +29,7 @@ Source: [[YouTube](https://www.youtube.com/watch?v=e422eloJ0W4&list=PLJV_el3uVTs
 
     + Input: `[CLS] + Sentence 1 + [SEP] + Sentence 2`
     + Output: Yes/No (This approach is not helpful. [[arXiv](https://arxiv.org/abs/1907.11692)])
-    + SOP (Sentence Order Prediction): used in ALBERT [[arXiv](htpps://arxiv.org/abs/1909.11942)]
+    + SOP (Sentence Order Prediction): used in ALBERT [[arXiv](https://arxiv.org/abs/1909.11942)]
 
 + Trained to fill blanks, used for various downstream tasks.
 

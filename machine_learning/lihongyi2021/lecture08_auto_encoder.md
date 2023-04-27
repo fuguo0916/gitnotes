@@ -32,7 +32,7 @@ Auto-encoder, which is an old technology, is also a kind of self-supervised lear
 + Representation could be binaries, even one-hot, instead of real numbers.
 + Vector Quantized Variantional Auto-encoder (VQVAE) [[arXiv](https://arxiv.org/abs/1711.00937)]
     + We have a codebook comprising a set of vectors (representations)
-    + Compute similatiry between the outcome representation and vectors in codebook.
+    + Compute similarity between the outcome representation and vectors in codebook.
     + The most similar one is the input of decoder
     + For speech, the codebook represents phonetic information
 
